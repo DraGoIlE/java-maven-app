@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script {
                     echo "Building the Docker image..."
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credential', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-cred', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                         sh 'docker build -t kavintito/demo-app:jmp-2.0 .'
                         sh "echo \$PASS | docker login -u \$USER --password-stdin"
                         sh 'docker push kavintito/demo-app:jmp-2.0'
