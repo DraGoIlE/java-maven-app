@@ -1,35 +1,22 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'maven-3.9'
-    }
-
     stages {
-        stage('Build jar') {
+        stage ('Build') {
             steps {
-                sh 'mvn package'
+                echo 'Building application.....'
             }
         }
 
-        stage('Build Image') {
+        stage ('Test') {
             steps {
-                script {
-                    echo "Building the Docker image..."
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credential', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        sh 'docker build -t azeshion21/demo-app:jmp-2.0 .'
-                        sh "echo \$PASS | docker login -u \$USER --password-stdin"
-                        sh 'docker push azeshion21/demo-app:jmp-2.0'
-                    }
-                }
+                echo 'Testing applications.....'
             }
         }
 
-        stage('Deploy') {
+        stage ('Deploy') {
             steps {
-                script {
-                    echo "Deploying the application..."
-                }
+                echo 'Deploying applications.....'
             }
         }
     }
