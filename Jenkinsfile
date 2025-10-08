@@ -1,22 +1,35 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'maven-app'
+    }
+
     stages {
-        stage ('Build') {
+        stage('Build jar') {
             steps {
-                echo 'Building application.....'
+                sh 'mvn package'
             }
         }
 
-        stage ('Test') {
+        stage('Build Image') {
             steps {
-                echo 'Testing applications.....'
+                script {
+                    echo "Building the Docker image..."
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credential', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                        sh 'docker build -t kavintito/demo-app:jmp-2.0 .'
+                        sh "echo \$PASS | docker login -u \$USER --password-stdin"
+                        sh 'docker push kavintito/demo-app:jmp-2.0'
+                    }
+                }
             }
         }
 
-        stage ('Deploy') {
+        stage('Deploy') {
             steps {
-                echo 'Deploying applications.....'
+                script {
+                    echo "Deploying the application..."
+                }
             }
         }
     }
